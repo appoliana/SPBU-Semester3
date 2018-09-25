@@ -1,0 +1,13 @@
+image: Visual Studio 2017
+build: off
+branches:
+    only:
+    - 1hw
+environment:
+    matrix:
+    - SOLUTION_PATH: Lazy
+before_build:
+    - nuget restore %SOLUTION_PATH%\Lazy.sln
+build_script:
+    - msbuild %SOLUTION_PATH%\Lazy.sln
+test: off
