@@ -2,7 +2,7 @@ image: Visual Studio 2017
 build: off
 branches:
     only:
-    - 1hw
+    - lazy
 environment:
     matrix:
     - SOLUTION_PATH: Lazy
