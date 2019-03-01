@@ -4,31 +4,32 @@ namespace Lazy
 {
     public class MyLazyMulti<T> : ILazy<T>
     {
-        private Func<T> func;
+        private volatile bool calledBefore;
         private T result;
-        private volatile bool hasValue;
-        public MyLazyMulti(Func<T> func)
+        private Func<T> supplier;
+        private Object lockObject = new Object();
+        
+        public MultiThreadLazy(Func<T> supplier)
         {
-            this.func = func;
-            this.hasValue = false;
+            this.supplier = supplier;
         }
 
-        static object looker = new object();
-
-        T ILazy<T>.Get()
+        public T Get()
         {
-            if (!this.hasValue)
+            if (!calledBefore)
             {
-                lock (looker)
+                lock (lockObject)
                 {
-                    if (!this.hasValue)
+                    if (!calledBefore)
                     {
-                            this.result = this.func();
-                            this.hasValue = true;
+                        result = supplier();
+                        calledBefore = true;
+                        supplier = null;
                     }
-                } 
+                }
             }
-            return this.result;
+
+            return result;
         }
     }
 }
