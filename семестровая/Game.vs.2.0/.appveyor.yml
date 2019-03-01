@@ -1,0 +1,13 @@
+image: Visual Studio 2017
+build: off
+branches:
+    only:
+    - master
+environment:
+    matrix:
+    - SOLUTION_PATH: Game.vs.2.0.
+before_build:
+    - nuget restore %SOLUTION_PATH%\Game.vs.2.0..sln
+build_script:
+    - msbuild %SOLUTION_PATH%\Game.vs.2.0..sln
+test: off
