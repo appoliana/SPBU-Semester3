@@ -5,9 +5,9 @@ branches:
     - master
 environment:
     matrix:
-    - SOLUTION_PATH: Game.vs.2.0
+    - SOLUTION_PATH: Game.vs.2.0.
 before_build:
-    - nuget restore %SOLUTION_PATH%\Game.vs.2.0
+    - nuget restore %SOLUTION_PATH%\Game.vs.2.0.
 build_script:
-    - msbuild %SOLUTION_PATH%\Game.vs.2.0
+    - msbuild %SOLUTION_PATH%\Game.vs.2.0.
 test: off
