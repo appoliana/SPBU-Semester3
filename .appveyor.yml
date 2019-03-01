@@ -2,12 +2,12 @@ image: Visual Studio 2017
 build: off
 branches:
     only:
-    - 1hw
+    - master
 environment:
     matrix:
-    - SOLUTION_PATH: Lazy
+    - SOLUTION_PATH: Game.vs.2.0
 before_build:
-    - nuget restore %SOLUTION_PATH%\Lazy.sln
+    - nuget restore %SOLUTION_PATH%\Game.vs.2.0
 build_script:
-    - msbuild %SOLUTION_PATH%\Lazy.sln
+    - msbuild %SOLUTION_PATH%\Game.vs.2.0
 test: off
