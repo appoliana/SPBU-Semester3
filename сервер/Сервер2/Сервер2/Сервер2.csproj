@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0407A235-5092-471D-8029-48FAEF26DB7C}</ProjectGuid>
+    <ProjectGuid>{EE663390-F30F-4474-9FE2-99BFA079AAFB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Server</RootNamespace>
-    <AssemblyName>Server</AssemblyName>
+    <RootNamespace>Сервер2</RootNamespace>
+    <AssemblyName>Сервер2</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -44,11 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GetResponce.cs" />
-    <Compile Include="HTTPServer.cs" />
+    <Compile Include="ListResponce.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Request.cs" />
-    <Compile Include="ListResponce.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

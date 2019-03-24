@@ -35,7 +35,7 @@ namespace Server
             {
                 try
                 {
-                    responseForClient += item.Name + ""; 
+                    responseForClient += item.Name + "";
                 }
                 catch (Exception)
                 {
@@ -51,28 +51,3 @@ namespace Server
         }
     }
 }
-
-
-if (!Directory.Exists(path))
-            {
-                await writer.WriteLineAsync("-1");
-                return;
-            }
-
-            var directory = new DirectoryInfo(path);
-            var dirList = directory.GetDirectories();
-            var fileList = directory.GetFiles();
-
-            await writer.WriteLineAsync($"{dirList.Length + fileList.Length}");
-
-            foreach (var dir in dirList)
-            {
-                await writer.WriteLineAsync(dir.Name);
-                await writer.WriteLineAsync("true");
-            }
-
-            foreach (var file in fileList)
-            {
-                await writer.WriteLineAsync(file.Name);
-                await writer.WriteLineAsync("false");
-            }

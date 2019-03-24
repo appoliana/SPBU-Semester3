@@ -31,7 +31,7 @@ namespace Server
             {
                 try
                 {
-                    responseForClient = wc.DownloadString(path + item.Name); 
+                    responseForClient = wc.DownloadString(path + item.Name);
                     writer.WriteLine(responseForClient);
                     writer.Flush();
                 }
@@ -45,15 +45,3 @@ namespace Server
     }
 }
 
- if (!File.Exists(path))
-            {
-                await writer.WriteLineAsync("-1");
-                return;
-            }
-
-            await writer.WriteLineAsync($"{(new FileInfo(path)).Length}");
-
-            using (FileStream file = File.OpenRead(path))
-            {
-                await file.CopyToAsync(writer.BaseStream);
-            }

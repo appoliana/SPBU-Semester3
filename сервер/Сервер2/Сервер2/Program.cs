@@ -1,27 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace Server
 {
     class Program
     {
-        //static Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-
         static void Main(string[] args)
         {
-            /*socket.Bind(new IPEndPoint(IPAddress.Any, 1200));
-            socket.Listen(5);
-            Socket client = socket.Accept();
-            Console.WriteLine("Новое подключение...");
-            byte[] buffer = new byte[1024];
-            client.Receive(buffer);*/
-
             TcpListener listener = new TcpListener(IPAddress.Any, 1200);
             listener.Start();
             TcpClient client = listener.AcceptTcpClient();
