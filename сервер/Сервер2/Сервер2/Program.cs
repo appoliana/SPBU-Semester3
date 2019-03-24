@@ -1,48 +1,45 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server
 {
+    /// <summary>
+    /// Класс, который отвечает за сервер.
+    /// </summary>
     class Program
     {
         const int port = 1200;
+        /// <summary>
+        /// Метод, который прослушивает подключения и принимает их.
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
-            // прослушивание порта
-            // установить соединение
-            // в цикле: 
-            // получить запрос
-            // обработать запрос
-            // отправить ответ
-
             TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
             TcpClient client = listener.AcceptTcpClient();
             Console.WriteLine("New connection...");
-            while (client.Connected) // пока есть подключение
+            while (client.Connected) 
             {
                 NetworkStream stream = client.GetStream();
-                var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
-                string response = reader.ReadLine(); // считали то что отправил клиент
+                var reader = new StreamReader(stream, System.Text.Encoding.Unicode);
+                string response = reader.ReadLine(); 
                 Console.WriteLine(response);
-                var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
+                var writer = new StreamWriter(stream, System.Text.Encoding.Unicode);
                 string request = ProsessingRequest(response);
                 writer.WriteLine(request);
                 writer.Flush();
             }
         }
 
-        //если строка пустая
-        //переписать строку как массив
-        //посмотреть на первый символ
-        // в зависимости 1 или 2 вызвать разные методы
-        static string ProsessingRequest(string response) // метод для обработки запроса
+        /// <summary>
+        /// Метод, который обрабатывает запрос.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
+        static string ProsessingRequest(string response)
         {
             if (response.Length == 0)
             {
@@ -65,11 +62,16 @@ namespace Server
             }
         }
 
+        /// <summary>
+        /// Метод, который возвращает список файлов и папок по указанному пути.
+        /// </summary>
+        /// <param name="response"></param>
+        /// <returns></returns>
         static string ListResponce(string response)
         {
             Console.WriteLine(response);
-            var dir = new DirectoryInfo(response);
-            string request = "============Список папок и файлов============= ";
+            var dir = new DirectoryInfo(response.Remove(0, 2));
+            string request = "============List of files and folders============= ";
             foreach (var item in dir.GetDirectories())
             {
                 try
@@ -95,10 +97,18 @@ namespace Server
             return request;
         }
 
+        /// <summary>
+        /// Метод, который возвращает содержимое файла по указанному пути.
+        /// </summary>
+        /// <param name="responce"></param>
+        /// <returns></returns>
         static string GetResponce(string responce)
         {
-            return responce;
+            using (StreamReader str = new StreamReader(responce.Remove(0, 2)))
+            {
+                string request = "The contaning of our file: " + str.ReadToEnd() ;
+                return request;
+            }
         }
     }
 }
-
