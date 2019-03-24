@@ -11,43 +11,37 @@ namespace Server
 {
     class Program
     {
+        const int port = 1200;
         static void Main(string[] args)
         {
-            TcpListener listener = new TcpListener(IPAddress.Any, 1200);
+            // прослушивание порта
+            // установить соединение
+            // в цикле: 
+            // получить запрос
+            // обработать запрос
+            // отправить ответ
+
+            TcpListener listener = new TcpListener(IPAddress.Any, port);
             listener.Start();
             TcpClient client = listener.AcceptTcpClient();
-            Console.WriteLine("Новое подключение...");
-
-            var stream = client.GetStream();
-            StreamReader reader = new StreamReader(stream);
-            string msg = reader.ReadLine();
-
-
-            Console.WriteLine(msg);//Encoding.ASCII.GetString(buffer));
-            Console.WriteLine();
-
-            if (string.IsNullOrEmpty(msg))//Encoding.ASCII.GetString(buffer)))
+            Console.WriteLine("New connection...");
+            while (client.Connected) // пока есть подключение
             {
-                Console.WriteLine("Строка пустая.");
+                NetworkStream stream = client.GetStream();
+                var reader = new StreamReader(stream);
+                string response = reader.ReadLine(); // считали то что отправил клиент
+                Console.WriteLine(response);
+                var writer = new StreamWriter(stream);
+                string request = ProsessingRequest(response);
+                writer.WriteLine(request);
+                writer.Flush();
             }
-            string[] msg1 = msg.Split(' ');//Encoding.ASCII.GetString(buffer).Split(' ');
+        }
 
-            if (msg1[0] == "1")
-            {
-                string responce = msg.Remove(0, 2);
-                Console.WriteLine(responce);
-                ListResponce.List(responce, client);
-            }
-            if (msg1[0] == "2")
-            {
-                string responce = msg1.ToString().Remove(0, 2);
-                GetResponce.Get(responce, client);
-            }
-            else
-            {
-                Console.WriteLine("Строка передана в неправильном формате.");
-            }
-            client.Close();
+        static string ProsessingRequest(string response) // метод для обработки запроса
+        {
+            return response;
         }
     }
 }
+
