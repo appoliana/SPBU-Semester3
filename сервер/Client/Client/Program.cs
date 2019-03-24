@@ -23,14 +23,15 @@ namespace Client
             {
                 Console.WriteLine("Hellow! If you want to see files send 1 and then parth, if you wand to download files right 2 and then parth, for exit right Exit.");
                 NetworkStream stream = client.GetStream();
-                var reader = new StreamReader(stream);
-                var writer = new StreamWriter(stream);
+                var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+                var writer = new StreamWriter(stream, System.Text.Encoding.UTF8);
                 var message = Console.ReadLine();
                 while (message != "Exit")
                 {
+                    //byte[] messageArray = Encoding.Default.GetBytes(message);
                     writer.WriteLine(message);
                     writer.Flush();
-                    var data = reader.ReadToEnd();
+                    string data = reader.ReadLine();
                     Console.WriteLine(data);
                     message = Console.ReadLine();
                 }
