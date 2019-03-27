@@ -43,8 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GetInfoFromTests.cs" />
+    <Compile Include="PrintInformationAboutTests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RunTestsInAssembly.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
