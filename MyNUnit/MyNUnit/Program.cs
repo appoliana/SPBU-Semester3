@@ -13,11 +13,26 @@ namespace MyNUnit
         {
             Console.WriteLine("Right a parth to assembly...");
             string parth = Console.ReadLine();
+            string messageAboutWorkingAssemblies = "";
             var listOfAssemblies = new List<Assembly>();
-            while (true)
+            GetAllAssemblies getter = new GetAllAssemblies();
+            (listOfAssemblies, messageAboutWorkingAssemblies) = getter.GetAll(parth);
+            if (messageAboutWorkingAssemblies == "Все в порядке, ошибок нет!")
             {
-                listOfAssemblies.Add(Assembly.LoadFrom(parth));
-                Console.WriteLine(RunTestsInAssembly.RunTests(Assembly.LoadFrom(parth)));
+                Console.WriteLine("Assemblies are ready, tests begining to work.");
+                RunTestsInAssembly run = new RunTestsInAssembly();
+                
+                for (int i = 0; i < listOfAssemblies.Count; ++i)
+                {
+                    Console.WriteLine("Test " + i + " is working now.");
+                    run.RunTests(listOfAssemblies[i]);
+                }
+                Console.ReadLine();
+            }
+            else
+            {
+                Console.WriteLine(messageAboutWorkingAssemblies);
+                Console.ReadLine();
             }
         }
     }

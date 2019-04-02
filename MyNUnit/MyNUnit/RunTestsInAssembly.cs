@@ -13,33 +13,65 @@ namespace MyNUnit
         /// <returns></returns>
         public string RunTests(Assembly assembly)
         {
-            var allTypes = assembly.GetTypes();
+            var allTypes = new Type[10000];
+            try
+            {
+                allTypes = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException ex)
+            {
+                return "Для сборки " + assembly + "выявлена ошибка " + ex.Message;
+            }
             foreach (Type type in allTypes)
             {
                 foreach (MethodInfo mInfo in type.GetMethods())
                 {
+                    Console.WriteLine("Now we see on method " + mInfo.Name);
                     RunMethodsWithAnnotationBeforeClass(assembly, type);
 
                     if (Attribute.GetCustomAttributes(mInfo).GetType() == typeof(TestAttribute))
                     {
+                        string message = "";
+                        string testName = mInfo.Name;
                         RunMethodsWithAnnotationBefore(assembly, type);
+
+                        PrintInformationAboutTests print = new PrintInformationAboutTests();
+
+                        var attributeProperties = mInfo.GetCustomAttribute<TestAttribute>();
+                        if (attributeProperties.Ignore != 0) // если есть аргумерт Ignore
+                        {
+                            return print.PrintInformation(default(TimeSpan), attributeProperties.Ignore, testName);
+                        }
 
                         var watch = new Stopwatch();
                         watch.Start();
-                        Object run = Activator.CreateInstance(type);
-                        mInfo.Invoke(run, Array.Empty<Object>());
-                        watch.Stop();
-                        TimeSpan ts = watch.Elapsed;
-
-                        PrintInformationAboutTests print = new PrintInformationAboutTests();
-                        print.PrintInformation(ts);
-
+                        try
+                        {
+                            Object run = Activator.CreateInstance(type);
+                            
+                            mInfo.Invoke(run, Array.Empty<Object>());
+                        }
+                        catch (Exception ex)
+                        {
+                            var exceptionType = ex.InnerException.GetType();
+                            if (exceptionType != attributeProperties.Expected)
+                            {
+                                message = "Test was stopped because of exception " + exceptionType.ToString();
+                            }
+                        }
+                        finally
+                        {
+                            watch.Stop();
+                            TimeSpan ts = watch.Elapsed;
+                            print.PrintInformation(ts, message, testName);
+                        }
                         RunMethodsWithAnnotationAfter(assembly, type);
                     }
 
                     RunMethodsWithAnnotationAfterClass(assembly, type);
                 }
             }
+            
             return "0";
         }
 

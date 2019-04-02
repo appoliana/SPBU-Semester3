@@ -8,7 +8,7 @@ namespace MyNUnit
 {
     public class PrintInformationAboutTests
     {
-        public void PrintInformation(TimeSpan ts)
+        public void PrintInformation(TimeSpan ts, string  testName, string message)
         {
             string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}.{3:00}",
             ts.Hours, ts.Minutes, ts.Seconds,
