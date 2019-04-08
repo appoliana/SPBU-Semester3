@@ -20,59 +20,82 @@ namespace MyNUnit
             }
             catch (ReflectionTypeLoadException ex)
             {
-                return "Для сборки " + assembly + "выявлена ошибка " + ex.Message;
+                return "For assembly " + assembly + "was finding error " + ex.Message;
             }
             foreach (Type type in allTypes)
             {
                 foreach (MethodInfo mInfo in type.GetMethods())
                 {
-                    Console.WriteLine("Now we see on method " + mInfo.Name);
-                    RunMethodsWithAnnotationBeforeClass(assembly, type);
+                    //Console.WriteLine("Now we watching on method " + mInfo.Name);
 
-                    if (Attribute.GetCustomAttributes(mInfo).GetType() == typeof(TestAttribute))
+                    if (FindTestAttribute(mInfo)) 
                     {
+                        Console.WriteLine("We found it!");
                         string message = "";
                         string testName = mInfo.Name;
-                        RunMethodsWithAnnotationBefore(assembly, type);
+                        //RunMethodsWithAnnotationBefore(assembly, type);
 
                         PrintInformationAboutTests print = new PrintInformationAboutTests();
 
-                        var attributeProperties = mInfo.GetCustomAttribute<TestAttribute>();
-                        if (attributeProperties.Ignore != 0) // если есть аргумерт Ignore
+                        var attributeProperties = mInfo.GetCustomAttribute<TestMethod>();
+                        /*if (attributeProperties.Ignore != 0) // если есть аргумерт Ignore
                         {
                             return print.PrintInformation(default(TimeSpan), attributeProperties.Ignore, testName);
                         }
+                        */
 
                         var watch = new Stopwatch();
                         watch.Start();
                         try
                         {
                             Object run = Activator.CreateInstance(type);
-                            
                             mInfo.Invoke(run, Array.Empty<Object>());
+                            message = "Test was sucssesed.";
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            var exceptionType = ex.InnerException.GetType();
+                            /*var exceptionType = ex.InnerException.GetType();
                             if (exceptionType != attributeProperties.Expected)
                             {
                                 message = "Test was stopped because of exception " + exceptionType.ToString();
                             }
+                            */
                         }
-                        finally
+                        
+                        /*finally
                         {
                             watch.Stop();
                             TimeSpan ts = watch.Elapsed;
                             print.PrintInformation(ts, message, testName);
                         }
+                        */
+                        watch.Stop();
+                        TimeSpan ts = watch.Elapsed;
+                        print.PrintInformation(ts, message, testName); // здесь не надо ничего печатать
                         RunMethodsWithAnnotationAfter(assembly, type);
                     }
-
                     RunMethodsWithAnnotationAfterClass(assembly, type);
                 }
             }
             
             return "0";
+        }
+
+        public bool FindTestAttribute(MethodInfo mInfo)
+        {
+            System.Attribute[] attrs = System.Attribute.GetCustomAttributes(mInfo);
+            //if (attrs != null && attrs.Length > 0)
+                    //Console.WriteLine("Array of attributes in method " + mInfo.Name + " is not empty. " + attrs[0]);
+            foreach (System.Attribute i in attrs)
+            {
+                if (i is TestMethod a)
+                {
+                    Console.WriteLine(a);
+                    return true;
+                }
+            }
+            Console.WriteLine("We did not find it.");
+            return false;
         }
 
         public void RunMethodsWithAnnotationBefore(Assembly assembly, Type type)
@@ -128,9 +151,9 @@ namespace MyNUnit
         }
     }
 
-    public class TestAttribute : System.Attribute
+    public class TestMethod : System.Attribute
     {
-        public TestAttribute()
+        public TestMethod()
         {
         }
     }

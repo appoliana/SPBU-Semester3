@@ -24,16 +24,17 @@ namespace MyNUnit
                 
                 for (int i = 0; i < listOfAssemblies.Count; ++i)
                 {
-                    Console.WriteLine("Test " + i + " is working now.");
+                    //Console.WriteLine("Assembly " + listOfAssemblies[i].GetName(false) + " " + " is watching now.");
+                    //if (listOfAssemblies[i].GetName(false).ToString().Contains("ComparatorTests"))
                     run.RunTests(listOfAssemblies[i]);
                 }
-                Console.ReadLine();
             }
             else
             {
                 Console.WriteLine(messageAboutWorkingAssemblies);
                 Console.ReadLine();
             }
+            Console.ReadLine();
         }
     }
 }
