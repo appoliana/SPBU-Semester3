@@ -27,25 +27,22 @@ namespace MyNUnit
             {
                 foreach (MethodInfo mInfo in type.GetMethods())
                 {
-                    if (mInfo.Name == "ComparedTwoClasses")
-                        Console.WriteLine("We founr method ComparedTwoClasses!!!" + mInfo.Name);
-                    //Console.WriteLine("Now we watching on method " + mInfo.Name);
-
-                    if (FindTestAttribute(mInfo))
+                    bool isItTestAttribute = false;
+                    string agument = "";
+                    (isItTestAttribute, agument) = FindTestAttribute(mInfo);
+                    if (isItTestAttribute)
                     {
-                        Console.WriteLine("We found it!");
-                        string message = "";
                         string testName = mInfo.Name;
-                        //RunMethodsWithAnnotationBefore(assembly, type);
+                        string message = "";
+                        RunMethodsWithAnnotationBefore(assembly, type);
 
                         PrintInformationAboutTests print = new PrintInformationAboutTests();
 
-                        var attributeProperties = mInfo.GetCustomAttribute<TestAttribute>();
-                        /*if (attributeProperties.Ignore != 0) // если есть аргумерт Ignore
+                        if (agument == "Ignore") // если есть аргумерт Ignore
                         {
-                            return print.PrintInformation(default(TimeSpan), attributeProperties.Ignore, testName);
+                            message = "Was not done because of agument " + agument;
+                            print.PrintInformation(default(TimeSpan), testName, message);
                         }
-                        */
 
                         var watch = new Stopwatch();
                         watch.Start();
@@ -54,58 +51,39 @@ namespace MyNUnit
                             Object run = Activator.CreateInstance(type);
                             mInfo.Invoke(run, Array.Empty<Object>());
                             message = "Test was sucssesed.";
+                            watch.Stop();
                         }
-                        catch (Exception)
-                        {
-                            /*var exceptionType = ex.InnerException.GetType();
-                            if (exceptionType != attributeProperties.Expected)
-                            {
-                                message = "Test was stopped because of exception " + exceptionType.ToString();
-                            }
-                            */
-                        }
-
-                        /*finally
+                        catch (Exception e)
                         {
                             watch.Stop();
-                            TimeSpan ts = watch.Elapsed;
-                            print.PrintInformation(ts, message, testName);
+                            var exceptionType = e.InnerException.GetType();
+                            message = $"The test has thrown the {exceptionType.ToString()}. Exception message is: {e.Message}";
+
                         }
-                        */
-                        watch.Stop();
                         TimeSpan ts = watch.Elapsed;
-                        print.PrintInformation(ts, message, testName); // здесь не надо ничего печатать
-                        //RunMethodsWithAnnotationAfter(assembly, type);
+                        print.PrintInformation(ts, message, testName); 
+                        RunMethodsWithAnnotationAfter(assembly, type);
                     }
-                    //RunMethodsWithAnnotationAfterClass(assembly, type);
+                    RunMethodsWithAnnotationAfterClass(assembly, type);
                 }
             }
-
             return "0";
         }
 
-        public bool FindTestAttribute(MethodInfo mInfo)
+        public (bool, string) FindTestAttribute(MethodInfo mInfo)
         {
-            System.Attribute[] attrs = System.Attribute.GetCustomAttributes(mInfo);
-            if (mInfo.Name == "ComparedTwoClasses")
-                Console.WriteLine("Now we see attribute of ComparedTwoClasses method.");
-            if (attrs != null && attrs.Length > 0)
-            Console.WriteLine("Array of attributes in method " + mInfo.Name + " is not empty. " + attrs[0]);
-            foreach (System.Attribute i in attrs)
+            foreach (var attribute in Attribute.GetCustomAttributes(mInfo))
             {
-                TestAttribute a;
-                if (i is TestAttribute)
+                if (attribute.GetType().FullName == typeof(TestAttribute).FullName)
                 {
-                    a = (TestAttribute)i; // сделать проверку типа другим образом 
-                    Console.WriteLine(a);
-                    return true;
+                    TestAttribute a = (TestAttribute)attribute;
+                    return (true, a.);
                 }
             }
-            Console.WriteLine("We did not find it.");
-            return false;
+            return (false, "");
         }
 
-        /*public void RunMethodsWithAnnotationBefore(Assembly assembly, Type type)
+        public void RunMethodsWithAnnotationBefore(Assembly assembly, Type type)
         {
             var allTypes = assembly.GetTypes();
             foreach (MethodInfo mInfo in type.GetMethods())
@@ -156,6 +134,5 @@ namespace MyNUnit
                 }
             }
         }
-        */
     }
 }

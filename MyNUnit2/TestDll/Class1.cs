@@ -8,9 +8,13 @@ namespace TestDll
 {
     public class TestAttribute : System.Attribute
     {
-        public TestAttribute()
+        public string MessageAboutIgnoreThisTest;
+        public TestAttribute(string messageAboutIgnoreThisTest)
         {
+            this.MessageAboutIgnoreThisTest = messageAboutIgnoreThisTest;
         }
+
+        public string messageAboutIgnoreThisTest { get; set; }
     }
 
     public class BeforeAttribute : System.Attribute
